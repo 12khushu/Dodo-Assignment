@@ -1,0 +1,673 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+:root {
+  font-family: "Manrope", system-ui, sans-serif;
+  color: #f5f3ef;
+  background: #050507;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  overflow: hidden;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button,
+.controls,
+.tip-card,
+.detail-card,
+input[type="range"]::-webkit-slider-thumb {
+  transition:
+    opacity 0.32s ease,
+    transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background 0.32s ease,
+    border-color 0.32s ease,
+    box-shadow 0.32s ease;
+}
+
+/* ------------------------------
+   App
+------------------------------ */
+
+.app {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  min-height: 680px;
+  overflow: hidden;
+  background: #050507;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.045;
+
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+
+  mix-blend-mode: screen;
+}
+
+/* ------------------------------
+   Top navigation
+------------------------------ */
+
+.topbar {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 26px 30px;
+
+  font: 500 11px/1 "DM Mono", monospace;
+  letter-spacing: 0.13em;
+  color: rgba(245, 243, 239, 0.62);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  color: #f5f3ef;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+
+  border-radius: 50%;
+  background: #ffb45b;
+
+  box-shadow: 0 0 18px #ff8d55;
+}
+
+.eyebrow {
+  opacity: 0.65;
+}
+
+/* ------------------------------
+   Hero
+------------------------------ */
+
+.hero {
+  position: absolute;
+  z-index: 2;
+
+  top: 16%;
+  left: 6vw;
+
+  width: min(610px, 55vw);
+
+  pointer-events: none;
+}
+
+.kicker {
+  margin: 0 0 18px;
+
+  font: 500 11px/1 "DM Mono", monospace;
+  letter-spacing: 0.18em;
+
+  color: rgba(245, 243, 239, 0.5);
+}
+
+h1 {
+  margin: 0;
+
+  font-size: clamp(58px, 7.2vw, 110px);
+  line-height: 0.88;
+  letter-spacing: -0.075em;
+  font-weight: 700;
+}
+
+h1 em {
+  font-style: normal;
+  font-weight: 400;
+}
+
+.lede {
+  width: min(430px, 100%);
+  margin: 28px 0 0;
+
+  font-size: 14px;
+  line-height: 1.7;
+
+  color: rgba(245, 243, 239, 0.57);
+}
+
+/* ------------------------------
+   Controls panel
+------------------------------ */
+
+.controls {
+  position: absolute;
+  z-index: 3;
+
+  right: 30px;
+  bottom: 150px;
+
+  width: 290px;
+  padding: 18px 18px 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+
+  background: rgba(9, 9, 12, 0.62);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+
+  animation: panelIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.controls:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(11, 11, 15, 0.72);
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.38);
+}
+
+.control-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 16px;
+
+  font: 500 9px/1 "DM Mono", monospace;
+  letter-spacing: 0.15em;
+
+  color: rgba(245, 243, 239, 0.5);
+}
+
+.reset {
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+
+  color: rgba(245, 243, 239, 0.75);
+
+  font: 500 10px/1 "DM Mono", monospace;
+
+  cursor: pointer;
+
+  transition:
+    color 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.reset:hover {
+  color: #ffffff;
+}
+
+/* ------------------------------
+   Range controls
+------------------------------ */
+
+label {
+  display: block;
+
+  margin: 14px 0;
+
+  font-size: 11px;
+
+  color: rgba(245, 243, 239, 0.68);
+}
+
+label span {
+  float: right;
+
+  color: rgba(245, 243, 239, 0.38);
+
+  font: 10px "DM Mono", monospace;
+}
+
+input[type="range"] {
+  appearance: none;
+  -webkit-appearance: none;
+
+  display: block;
+
+  width: 100%;
+  height: 18px;
+
+  margin-top: 5px;
+
+  background: transparent;
+
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 1px;
+
+  background: rgba(255, 255, 255, 0.2);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+
+  width: 10px;
+  height: 10px;
+
+  margin-top: -4px;
+
+  border: 1px solid #f5f3ef;
+  border-radius: 50%;
+
+  background: #0b0b10;
+
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+
+  background: #f5f3ef;
+
+  box-shadow:
+    0 0 0 4px rgba(255, 255, 255, 0.08),
+    0 0 18px rgba(255, 255, 255, 0.18);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 1px;
+
+  background: rgba(255, 255, 255, 0.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 9px;
+  height: 9px;
+
+  border: 1px solid #f5f3ef;
+  border-radius: 50%;
+
+  background: #0b0b10;
+}
+
+/* ------------------------------
+   Pause button
+------------------------------ */
+
+.pause {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+
+  margin-top: 8px;
+  padding: 11px 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 9px;
+
+  color: #f5f3ef;
+  background: rgba(255, 255, 255, 0.045);
+
+  font-size: 11px;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.pause:hover {
+  transform: translateY(-1px);
+
+  border-color: rgba(255, 255, 255, 0.2);
+
+  background: rgba(255, 255, 255, 0.09);
+
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+.pause:active {
+  transform: translateY(0);
+}
+
+.pause span {
+  font-family: "DM Mono", monospace;
+  opacity: 0.55;
+}
+
+/* ------------------------------
+   Tip card
+------------------------------ */
+
+.tip-card {
+  position: absolute;
+  z-index: 3;
+
+  right: 30px;
+  bottom: 84px;
+
+  width: 290px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  padding: 14px 15px;
+
+  border: 1px solid rgba(255, 255, 255, 0.075);
+  border-radius: 14px;
+
+  background: rgba(9, 9, 12, 0.42);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  color: rgba(245, 243, 239, 0.72);
+
+  animation: panelIn 0.85s 0.08s
+    cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.tip-card:hover {
+  transform: translateY(-3px);
+
+  border-color: rgba(255, 255, 255, 0.12);
+
+  background: rgba(12, 12, 16, 0.58);
+
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+}
+
+.tip-mark {
+  display: grid;
+  place-items: center;
+
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, 0.06);
+
+  color: #f5f3ef;
+
+  font-size: 13px;
+}
+
+.tip-label {
+  display: block;
+
+  margin-bottom: 5px;
+
+  font: 500 9px/1 "DM Mono", monospace;
+  letter-spacing: 0.14em;
+
+  color: rgba(245, 243, 239, 0.42);
+}
+
+.tip-card p {
+  margin: 0;
+
+  font-size: 10px;
+  line-height: 1.55;
+
+  color: rgba(245, 243, 239, 0.58);
+}
+
+/* ------------------------------
+   Detail card
+------------------------------ */
+
+.detail-card {
+  position: absolute;
+  z-index: 3;
+
+  right: 30px;
+  bottom: 25px;
+
+  width: 290px;
+
+  padding: 10px 15px;
+
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 12px;
+
+  background: rgba(9, 9, 12, 0.3);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  animation: panelIn 0.75s 0.18s
+    cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.detail-card:hover {
+  transform: translateY(-3px);
+
+  border-color: rgba(255, 255, 255, 0.12);
+
+  background: rgba(12, 12, 16, 0.52);
+
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+}
+
+.detail-line {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 8px;
+
+  min-height: 24px;
+
+  font: 500 8px/1 "DM Mono", monospace;
+  letter-spacing: 0.12em;
+
+  color: rgba(245, 243, 239, 0.42);
+}
+
+.detail-line + .detail-line {
+  border-top: 1px solid rgba(255, 255, 255, 0.045);
+}
+
+.detail-index {
+  color: rgba(245, 243, 239, 0.22);
+}
+
+.detail-value {
+  color: rgba(245, 243, 239, 0.24);
+}
+
+/* ------------------------------
+   Footer
+------------------------------ */
+
+.footer {
+  position: absolute;
+  z-index: 2;
+
+  left: 30px;
+  right: 30px;
+  bottom: 25px;
+
+  display: flex;
+  justify-content: space-between;
+
+  font: 9px "DM Mono", monospace;
+  letter-spacing: 0.08em;
+
+  color: rgba(245, 243, 239, 0.32);
+}
+
+/* ------------------------------
+   Entrance animation
+------------------------------ */
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ------------------------------
+   Focus states
+------------------------------ */
+
+button:focus-visible,
+input:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.65);
+  outline-offset: 4px;
+}
+
+/* ------------------------------
+   Mobile
+------------------------------ */
+
+@media (max-width: 800px) {
+  .app {
+    min-height: 620px;
+  }
+
+  .topbar {
+    padding: 20px;
+  }
+
+  .eyebrow {
+    display: none;
+  }
+
+  .hero {
+    top: 12%;
+    left: 20px;
+
+    width: calc(100% - 40px);
+  }
+
+  h1 {
+    font-size: clamp(52px, 15vw, 82px);
+  }
+
+  .lede {
+    max-width: 360px;
+
+    margin-top: 20px;
+
+    font-size: 12px;
+  }
+
+  .controls {
+    left: 20px;
+    right: 20px;
+    bottom: 116px;
+
+    width: auto;
+
+    padding: 14px 15px;
+  }
+
+  .controls label {
+    display: none;
+  }
+
+  .control-head {
+    margin-bottom: 10px;
+  }
+
+  .pause {
+    margin-top: 0;
+  }
+
+  .tip-card {
+    left: 20px;
+    right: 20px;
+    bottom: 92px;
+
+    width: auto;
+  }
+
+  .detail-card {
+    left: 20px;
+    right: 20px;
+    bottom: 50px;
+
+    width: auto;
+  }
+
+  .footer {
+    left: 20px;
+    right: 20px;
+    bottom: 18px;
+  }
+
+  .footer span:last-child {
+    display: none;
+  }
+}
+
+/* ------------------------------
+   Reduced motion
+------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
